@@ -1,0 +1,29 @@
+# Jornada da Escuta — Hostinger (Apache/LiteSpeed)
+DirectoryIndex index.html
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+# Força HTTPS (recomendado; ative o SSL gratuito no hPanel)
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# API
+RewriteRule ^api/ api.php [L,QSA]
+# Painel do administrador
+RewriteRule ^admin/?$ admin.html [L]
+</IfModule>
+
+# Nunca servir arquivos internos
+<FilesMatch "^(config\.php|content\.php|db\.json\.php|\.htaccess)$">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "DENY"
+    Header always set Referrer-Policy "no-referrer"
+    Header always set X-Robots-Tag "noindex, nofollow"
+    Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"
+</IfModule>

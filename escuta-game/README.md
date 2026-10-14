@@ -74,6 +74,15 @@ location / {
 
 Os cookies de sessão são `HttpOnly`, `SameSite=Strict` e `Secure` automaticamente quando o acesso é por HTTPS.
 
+## Hospedagem compartilhada (Hostinger e similares): versão PHP
+
+Planos compartilhados costumam não rodar Node.js, então há uma versão **PHP** equivalente (mesma interface, mesmas regras, sem banco de dados) em `hostinger/`.
+
+- Pacote pronto para enviar: **`hostinger/jornada-da-escuta-hostinger.zip`** (extrair em `public_html` ou numa subpasta).
+- Instruções passo a passo em português: `hostinger/LEIA-ME.txt` (também dentro do ZIP).
+- Antes de usar, edite `config.php` e troque `admin_password`.
+- Para regerar o ZIP após editar o conteúdo ou a interface: `npm run build:hostinger`. Teste da versão PHP (requer `php` no PATH): `npm run test:php`.
+
 ## Uso pelo administrador (`/admin`)
 
 1. Entre com a `ADMIN_PASSWORD`.

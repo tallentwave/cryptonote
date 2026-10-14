@@ -1,0 +1,64 @@
+JORNADA DA ESCUTA — instalação na Hostinger (hospedagem compartilhada)
+=====================================================================
+
+Esta versão usa PHP (já incluído em qualquer plano da Hostinger). Não precisa
+de banco de dados, Node.js nem terminal.
+
+PASSO A PASSO
+-------------
+1) hPanel > Sites > (seu site) > Painel > "SSL": confirme que o SSL gratuito
+   está ATIVO. (O jogo força HTTPS.)
+
+2) hPanel > Arquivos > Gerenciador de Arquivos > pasta "public_html".
+   Para usar na raiz do domínio: envie o conteúdo do ZIP direto em public_html.
+   Para usar numa subpasta (ex.: seudominio.com.br/escuta): crie a pasta
+   "escuta" dentro de public_html e envie o conteúdo do ZIP nela.
+   (Botão "Enviar" > ZIP > clique direito no ZIP > "Extrair".)
+   Confira que o arquivo ".htaccess" foi extraído (ative "mostrar arquivos
+   ocultos" nas configurações do Gerenciador de Arquivos).
+
+3) Abra o arquivo config.php (botão direito > Editar) e troque:
+      'admin_password' => 'TROQUE-ESTA-SENHA',
+   por uma senha longa e única (mínimo 8 caracteres). Opcional: preencha
+   'org_name' com o nome da sua instituição (aparece no certificado).
+   Salve.
+
+4) PHP: hPanel > Avançado > "Configuração do PHP": use PHP 8.1 ou superior.
+
+5) Permissões: a pasta "data" precisa permitir escrita (normalmente já
+   permite; se aparecer o erro "Não foi possível abrir a pasta de dados",
+   defina a permissão da pasta data como 755 ou 775).
+
+6) Acesse:
+      Jogo ......... https://seudominio.com.br/            (ou /escuta/)
+      Painel admin . https://seudominio.com.br/admin       (ou /escuta/admin)
+   Entre no painel com a senha do passo 3, vá em "Códigos de acesso" > "Gerar"
+   e distribua os códigos (ESC-XXXX-XXXX) aos participantes.
+
+RECOMENDADO (mais seguro): guardar os dados fora de public_html
+---------------------------------------------------------------
+Crie, no Gerenciador de Arquivos, uma pasta ao lado de public_html (por ex.
+/home/uSEUUSUARIO/escuta-data) e, em config.php, descomente a linha
+'data_dir' informando esse caminho. Assim o arquivo de dados nunca fica
+acessível pela web. (Mesmo sem isso, ele é protegido por .htaccess e começa
+com um bloqueio PHP.)
+
+BACKUP E PRIVACIDADE
+--------------------
+- Os dados ficam em data/db.json.php. Baixe uma cópia periodicamente.
+- Participantes só informam nome/apelido. Oriente a não escrever dados de
+  casos reais. Após a capacitação, use "Excluir" no painel para apagar o grupo.
+
+PROBLEMAS COMUNS
+----------------
+- Página em branco / "Erro interno": confira a versão do PHP (8.1+).
+- "Rota não encontrada" em /api: o .htaccess não foi enviado; reenvie-o.
+- Painel diz "Defina uma senha...": edite config.php (passo 3).
+- Site em subpasta: tudo funciona sem ajustes; use o endereço com a subpasta.
+- Sessão cai ao entrar: use sempre o mesmo endereço (com ou sem "www").
+
+CONTEÚDO PEDAGÓGICO
+-------------------
+Os casos são fictícios. Revise com a equipe técnica e adapte ao protocolo/fluxo
+do seu município antes de usar. O texto das questões fica no código-fonte do
+projeto (arquivo lib/content.js) e é regerado com "node hostinger/build.js".

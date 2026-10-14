@@ -75,7 +75,7 @@
 
   async function logout() {
     try {
-      await api('/api/logout', 'POST', {});
+      await api('api/logout', 'POST', {});
     } catch (_) {}
     state = null;
     renderTop();
@@ -97,7 +97,7 @@
           err.hidden = true;
           btn.disabled = true;
           try {
-            await api('/api/join', 'POST', { code: codeIn.value, nickname: nickIn.value });
+            await api('api/join', 'POST', { code: codeIn.value, nickname: nickIn.value });
             await showHome();
           } catch (ex) {
             err.textContent = ex.message;
@@ -126,7 +126,7 @@
 
   /* ---------- início ---------- */
   async function loadState() {
-    state = await api('/api/state');
+    state = await api('api/state');
     renderTop();
     return state;
   }
@@ -183,7 +183,7 @@
   async function showPhase(id) {
     let phase;
     try {
-      phase = await api('/api/phase/' + id);
+      phase = await api('api/phase/' + id);
     } catch (e) {
       if (e.status === 401) return logout();
       toast(e.message);
@@ -245,7 +245,7 @@
 
       async function submit(payload, onDone) {
         try {
-          const r = await api('/api/answer', 'POST', Object.assign({ itemId: item.id }, payload));
+          const r = await api('api/answer', 'POST', Object.assign({ itemId: item.id }, payload));
           answers[idx] = r.result;
           state = r.state;
           renderTop();
@@ -335,7 +335,7 @@
   /* ---------- ranking ---------- */
   async function showRanking() {
     try {
-      const r = await api('/api/ranking');
+      const r = await api('api/ranking');
       mount(
         h('h1', {}, '🏅 Ranking'),
         h('p', { class: 'muted' }, `${r.group} · ${r.total} participante(s)${r.myRank ? ` · você está em ${r.myRank}º` : ''}`),
@@ -360,7 +360,7 @@
   /* ---------- início ---------- */
   (async function init() {
     try {
-      config = Object.assign(config, await api('/api/config'));
+      config = Object.assign(config, await api('api/config'));
     } catch (_) {}
     document.title = config.title;
     await showHome();

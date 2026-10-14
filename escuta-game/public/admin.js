@@ -72,7 +72,7 @@
           onsubmit: async (e) => {
             e.preventDefault();
             try {
-              await api('/api/admin/login', 'POST', { password: pw.value });
+              await api('api/admin/login', 'POST', { password: pw.value });
               showPanel();
             } catch (ex) {
               err.textContent = ex.message;
@@ -94,14 +94,14 @@
   async function showPanel() {
     let codes;
     try {
-      codes = (await api('/api/admin/codes')).codes;
+      codes = (await api('api/admin/codes')).codes;
     } catch (e) {
       return showLogin(e.status === 401 ? '' : e.message);
     }
     const tabBtn = (id, label) => h('button', { class: 'btn ghost small', role: 'tab', 'aria-selected': String(tab === id), onclick: () => { tab = id; showPanel(); } }, label);
     const body = h('div', {});
     app.replaceChildren(
-      h('div', { class: 'actions' }, h('h1', {}, '🔑 Administração · Jornada da Escuta'), h('span', { class: 'spacer' }), h('button', { class: 'btn ghost small', onclick: async () => { await api('/api/admin/logout', 'POST', {}); showLogin(); } }, 'Sair')),
+      h('div', { class: 'actions' }, h('h1', {}, '🔑 Administração · Jornada da Escuta'), h('span', { class: 'spacer' }), h('button', { class: 'btn ghost small', onclick: async () => { await api('api/admin/logout', 'POST', {}); showLogin(); } }, 'Sair')),
       h('div', { class: 'tabs', role: 'tablist' }, tabBtn('codes', 'Códigos de acesso'), tabBtn('people', 'Participantes'), tabBtn('stats', 'Análise por questão')),
       body
     );
@@ -122,7 +122,7 @@
         onsubmit: async (e) => {
           e.preventDefault();
           try {
-            const r = await api('/api/admin/codes', 'POST', { label: label.value, count: count.value, maxUsers: maxUsers.value, validDays: days.value });
+            const r = await api('api/admin/codes', 'POST', { label: label.value, count: count.value, maxUsers: maxUsers.value, validDays: days.value });
             lastCreated = r.codes;
             showPanel();
           } catch (ex) {
@@ -160,8 +160,8 @@
             { class: 'actions' },
             h('button', { class: 'btn small ghost', onclick: () => copy(c.code) }, 'Copiar'),
             h('button', { class: 'btn small ghost', onclick: () => { selected = c.id; tab = 'people'; showPanel(); } }, 'Ver'),
-            h('button', { class: 'btn small ghost', onclick: async () => { await api('/api/admin/codes/' + c.id, 'PATCH', { active: !c.active }); showPanel(); } }, c.active ? 'Revogar' : 'Reativar'),
-            h('button', { class: 'btn small danger', onclick: async () => { if (confirm(`Excluir o código ${c.code} e TODOS os dados dos ${c.participants} participante(s)? Esta ação não pode ser desfeita.`)) { await api('/api/admin/codes/' + c.id, 'DELETE'); showPanel(); } } }, 'Excluir')
+            h('button', { class: 'btn small ghost', onclick: async () => { await api('api/admin/codes/' + c.id, 'PATCH', { active: !c.active }); showPanel(); } }, c.active ? 'Revogar' : 'Reativar'),
+            h('button', { class: 'btn small danger', onclick: async () => { if (confirm(`Excluir o código ${c.code} e TODOS os dados dos ${c.participants} participante(s)? Esta ação não pode ser desfeita.`)) { await api('api/admin/codes/' + c.id, 'DELETE'); showPanel(); } } }, 'Excluir')
           )
         )
       )
@@ -184,9 +184,9 @@
   async function renderPeople(body, codes) {
     if (!codes.length) return body.append(h('div', { class: 'card muted' }, 'Gere um código para começar.'));
     const sel = codeSelect(codes, false, showPanel);
-    const data = await api(`/api/admin/codes/${selected}/participants`);
+    const data = await api(`api/admin/codes/${selected}/participants`);
     body.append(
-      h('div', { class: 'card' }, h('div', { class: 'grid2' }, h('div', {}, h('label', {}, 'Grupo'), sel), h('div', { class: 'actions' }, h('a', { class: 'btn ghost small', href: `/api/admin/export.csv?code=${selected}` }, '⬇️ Exportar CSV (grupo)'), h('a', { class: 'btn ghost small', href: '/api/admin/export.csv' }, '⬇️ Exportar CSV (todos)')))),
+      h('div', { class: 'card' }, h('div', { class: 'grid2' }, h('div', {}, h('label', {}, 'Grupo'), sel), h('div', { class: 'actions' }, h('a', { class: 'btn ghost small', href: `api/admin/export.csv?code=${selected}` }, '⬇️ Exportar CSV (grupo)'), h('a', { class: 'btn ghost small', href: 'api/admin/export.csv' }, '⬇️ Exportar CSV (todos)')))),
       h(
         'div',
         { class: 'card tablewrap' },
@@ -196,7 +196,7 @@
               'table',
               {},
               h('thead', {}, h('tr', {}, ['Participante', 'XP', '%', 'Respondidas', 'Nível', 'Último acesso', 'Concluiu', ''].map((t) => h('th', {}, t)))),
-              h('tbody', {}, data.participants.map((p) => h('tr', {}, h('td', {}, p.nickname), h('td', {}, `${p.xp}/${p.maxXp}`), h('td', {}, `${p.percent}%`), h('td', {}, `${p.answered}/${p.items}`), h('td', {}, p.level), h('td', {}, fmtDate(p.lastSeen)), h('td', {}, p.completedAt ? '✅' : '—'), h('td', {}, h('button', { class: 'btn small danger', onclick: async () => { if (confirm(`Remover ${p.nickname} e seu progresso?`)) { await api('/api/admin/participants/' + p.id, 'DELETE'); showPanel(); } } }, 'Remover')))))
+              h('tbody', {}, data.participants.map((p) => h('tr', {}, h('td', {}, p.nickname), h('td', {}, `${p.xp}/${p.maxXp}`), h('td', {}, `${p.percent}%`), h('td', {}, `${p.answered}/${p.items}`), h('td', {}, p.level), h('td', {}, fmtDate(p.lastSeen)), h('td', {}, p.completedAt ? '✅' : '—'), h('td', {}, h('button', { class: 'btn small danger', onclick: async () => { if (confirm(`Remover ${p.nickname} e seu progresso?`)) { await api('api/admin/participants/' + p.id, 'DELETE'); showPanel(); } } }, 'Remover')))))
             )
           : h('p', { class: 'muted' }, 'Ninguém entrou com este código ainda.')
       )
@@ -205,7 +205,7 @@
 
   async function renderStats(body, codes) {
     const sel = codeSelect(codes, true, showPanel);
-    const data = await api('/api/admin/stats' + (selected ? '?code=' + selected : ''));
+    const data = await api('api/admin/stats' + (selected ? '?code=' + selected : ''));
     const rows = data.items.map((it) => h('tr', {}, h('td', {}, it.phase), h('td', {}, it.prompt.length > 80 ? it.prompt.slice(0, 80) + '…' : it.prompt), h('td', {}, it.answers), h('td', {}, it.avgScore == null ? '—' : it.avgScore.toFixed(1)), h('td', {}, it.perfectPercent == null ? '—' : it.perfectPercent + '%')));
     body.append(
       h('div', { class: 'card' }, h('label', {}, 'Grupo'), sel, h('p', { class: 'muted small' }, `${data.participants} participante(s). Questões com menor % de acerto pleno indicam temas para reforçar na capacitação presencial.`)),
@@ -215,7 +215,7 @@
 
   (async function init() {
     try {
-      await api('/api/admin/me');
+      await api('api/admin/me');
       showPanel();
     } catch (_) {
       showLogin();
