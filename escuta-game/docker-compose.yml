@@ -1,0 +1,14 @@
+services:
+  escuta:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"   # exponha via proxy reverso com HTTPS
+    environment:
+      ADMIN_PASSWORD: "${ADMIN_PASSWORD:?defina ADMIN_PASSWORD}"
+      ORG_NAME: "${ORG_NAME:-}"
+      TRUST_PROXY: "1"
+    volumes:
+      - escuta-data:/data
+volumes:
+  escuta-data:

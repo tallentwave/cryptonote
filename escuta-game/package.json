@@ -1,0 +1,12 @@
+{
+  "name": "jornada-da-escuta",
+  "version": "1.0.0",
+  "description": "Jogo de capacitação em escuta especializada e revelação espontânea, com acesso por código gerado pelo administrador.",
+  "private": true,
+  "license": "UNLICENSED",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/*.test.js"
+  }
+}
