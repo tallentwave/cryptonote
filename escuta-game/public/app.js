@@ -302,16 +302,20 @@
           [...pool.querySelectorAll('button')].forEach((b) => (b.disabled = true));
           submit({ order: chosen }, (r) => {
             const res = r.result;
-            pool.replaceChildren();
-            mine.replaceChildren();
             const correct = res.correct;
+            const text = Object.fromEntries(correct.map((s) => [s.id, s.text]));
+            // Sua ordem: verde onde acertou a posição, vermelho onde errou
+            mine.className = 'order-list result';
+            mine.replaceChildren(...res.mine.map((id, i) => h('li', { class: correct[i].id === id ? 'ok' : 'no' }, h('span', { class: 'pos' }, `${i + 1}.`), text[id])));
+            // Ordem correta
             pool.className = 'order-list result';
-            pool.replaceChildren(...correct.map((s, i) => h('li', { class: res.mine[i] === s.id ? 'ok' : 'no' }, h('span', { class: 'pos' }, `${i + 1}.`), s.text)));
+            pool.replaceChildren(...correct.map((s, i) => h('li', { class: 'ok' }, h('span', { class: 'pos' }, `${i + 1}.`), s.text)));
+            pool.before(h('h3', {}, 'Ordem correta'));
             confirm.hidden = true;
             clear.hidden = true;
           });
         }
-        parts.push(h('p', { class: 'muted small' }, 'Toque nos itens na ordem em que devem acontecer.'), pool, h('h3', {}, 'Sua ordem'), mine, h('div', { class: 'actions' }, confirm, clear));
+        parts.push(h('p', { class: 'muted small' }, 'Toque nos itens na ordem em que devem acontecer.'), h('h3', {}, 'Sua ordem'), mine, pool, h('div', { class: 'actions' }, confirm, clear));
         paint();
       }
       parts.push(feedbackBox, nextBtn);
